@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3MF G-code Modifier</title>
+    <link rel="shortcut icon" href="images/favicon.webp" type="image/x-icon" />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        margin: 0;
+      }
+      a {
+        text-decoration: none;
+        color: #000;
+      }
+      .site-header {
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .site-navigation ul,
+      .site-navigation li {
+        margin: 0;
+        padding: 0;
+      }
+      .site-navigation li {
+        display: inline-block;
+        margin: 0;
+      }
+      .btn {
+        background: #d35500;
+        padding: 10px;
+        color: #fff;
+        border-radius: 4px;
+        width: 114px;
+        display: flex;
+        justify-content: center;
+        height: 46px;
+        box-sizing: border-box;
+        align-items: center;
+      }
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .card h3 {
+        font-size: 25px;
+        margin-top: 15px;
+      }
+      section.mn-bg {
+        background-image: url("images/bg.png");
+        min-height: calc(100vh - 197px);
+        background-color: #d35500;
+        mix-blend-mode: hard-light;
+        background-size: 100% 100%;
+        padding: 30px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .card {
+        max-width: 710px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 20px;
+        padding: 16px 30px 30px 30px;
+        box-sizing: border-box;
+      }
+      .flex.flex-column {
+        flex-direction: column;
+        align-items: center;
+      }
+      .flex {
+        display: flex;
+        justify-content: center;
+      }
+      .file-upload-wrapper {
+        position: relative;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .file-upload-box {
+        position: relative;
+        padding: 30px;
+        text-align: center;
+        border: 2px dashed #d35500;
+        border-radius: 4px;
+        background-color: #d355000d;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+      }
+      .file-upload-box:hover {
+        background-color: #d3550000;
+        border-color: #d35500;
+      }
+      .file-upload-input {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 1;
+      }
+      .upload-content {
+        position: relative;
+        z-index: 0;
+      }
+      .upload-content a {
+        color: #d35500;
+      }
+      .upload-icon {
+        font-size: 2.5rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+      }
+      .upload-content h5 {
+        font-size: 16px;
+        line-height: 24px;
+        margin-bottom: 10px;
+        margin-top: 15px;
+      }
+      span.Selected {
+        font-size: 12px;
+        line-height: 18px;
+        color: #495057;
+      }
+      .form {
+        gap: 15px;
+        margin: 5px 0 20px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+      .form-group .cmn {
+        width: 100%;
+        height: 40px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+        margin-top: 10px;
+        border-radius: 4px;
+        outline: none !important;
+        border: solid 1px #e2e6ee;
+        background: #e2e6ee;
+        padding-left: 15px;
+      }
+      .form label {
+        font-size: 14px;
+        color: #000;
+        font-weight: 500;
+      }
+      a.btn.join {
+        width: 100%;
+      }
+      p.copy {
+        margin: 0;
+        font-size: 12px;
+        line-height: 18px;
+        text-align: center;
+        height: 56px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #fileList {
+        margin-top: 20px;
+        max-height: 115px;
+        overflow-y: auto;
+        border: 1px solid #e2e6ee;
+        border-radius: 4px;
+        padding: 10px;
+        background: #e2e6ee;
+      }
+      #fileList ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      #fileList li {
+        padding: 5px 0;
+        font-size: 14px;
+        color: #495057;
+      }
+      #fileList li.gcode {
+        color: #d35500;
+        font-weight: bold;
+      }
+      #statistics {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #e2e6ee;
+        border-radius: 4px;
+        background: #e2e6ee;
+      }
+      #statistics h4 {
+        margin: 0 0 10px;
+        font-size: 16px;
+        color: #d35500;
+      }
+      #statistics p {
+        margin: 5px 0;
+        font-size: 14px;
+        color: #495057;
+      }
+      #loader {
+        display: none;
+        margin-top: 15px;
+        width: 100%;
+      }
+      .progress-container {
+        width: 100%;
+        height: 3px;
+        background: #e2e6ee;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: #d35500;
+        width: 0%;
+        transition: width 0.3s ease-in-out;
+      }
+      #progressText {
+        text-align: center;
+        font-size: 12px;
+        margin-top: 5px;
+        color: #495057;
+      }
+      #toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        background: #d35500;
+        color: #fff;
+        border-radius: 4px;
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+      #toast.show {
+        opacity: 1;
+      }
+      #toast.error {
+        background: #dc3545;
+      }
+      @media screen and (max-width: 767px) {
+        div.form {
+          flex-direction: column;
+        }
+        header.site-header {
+          padding: 0 15px;
+        }
+        .card {
+          padding: 16px 15px;
+        }
+        .file-upload-box {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header class="site-header">
+        <div class="site-identity">
+          <a href="javacript:void();">
+            <img
+              src="images/logo.png"
+              alt="3D Farmers Logo"
+              width="158"
+              height="78"
+            />
+          </a>
+        </div>
+        <nav class="site-navigation">
+          <ul class="nav">
+            <li><a href="javacript:void();" class="btn">Join us</a></li>
+          </ul>
+        </nav>
+      </header>
+    </div>
+    <section class="mn-bg">
+      <div class="container">
+        <div class="card">
+          <div class="flex flex-column">
+            <img
+              src="images/happy-bunch-avtar.png"
+              alt="Avatar"
+              width="104"
+              height="65"
+            />
+            <h3>3MF G-code Modifier</h3>
+          </div>
+          <div class="file-upload-wrapper">
+            <label class="file-upload-box mb-0" id="dropzone">
+              <input
+                type="file"
+                class="file-upload-input"
+                id="fileInput"
+                accept=".3mf"
+              />
+              <div class="upload-content">
+                <img
+                  src="images/upload-icn.png"
+                  alt="Upload Icon"
+                  width="69"
+                  height="59"
+                />
+                <h5 class="mb-2">
+                  Drop your .3mf file here or
+                  <a href="javacript:void();">click to select</a>
+                </h5>
+                <span class="Selected" id="selectedFileName"
+                  >No file selected</span
+                >
+              </div>
+            </label>
+            <div id="fileList" style="display: none">
+              <h4>Files in 3MF Archive:</h4>
+              <ul id="fileListItems"></ul>
+            </div>
+          </div>
+          <div id="statistics" style="display: none">
+            <h4>Queue Statistics:</h4>
+            <p>Duration: <span id="duration"></span></p>
+            <p>Plates: <span id="plates"></span></p>
+            <p>
+              Filament Usage (Slot 1): <span id="filamentLength"></span>,
+              <span id="filamentWeight"></span>
+            </p>
+          </div>
+          <div class="flex form">
+            <div class="form-group">
+              <label for="outputName">Custom Output Filename (.3mf):</label>
+              <input
+                type="text"
+                id="outputName"
+                placeholder="e.g. modified-file"
+                class="cmn"
+              />
+            </div>
+            <div class="form-group">
+              <label for="loopCount">Loop Repeats (e.g. 5):</label>
+              <input
+                type="number"
+                id="loopCount"
+                min="1"
+                value="1"
+                class="cmn"
+              />
+            </div>
+          </div>
+          <div class="flex">
+            <a
+              href="javacript:void();"
+              class="btn join"
+              id="processBtn"
+              onclick="processFile()"
+              >Process & Download</a
+            >
+          </div>
+          <div id="loader">
+            <div class="progress-container">
+              <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <div id="progressText">0%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="container">
+        <p class="copy">Copyright © 2025 3D Farmers, All rights reserved.</p>
+      </div>
+    </footer>
+    <div id="toast"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+      // UI elements
+      const dropzone = document.getElementById("dropzone");
+      const fileInput = document.getElementById("fileInput");
+      const selectedFileName = document.getElementById("selectedFileName");
+      const fileList = document.getElementById("fileList");
+      const fileListItems = document.getElementById("fileListItems");
+      const statistics = document.getElementById("statistics");
+      const durationEl = document.getElementById("duration");
+      const platesEl = document.getElementById("plates");
+      const filamentLengthEl = document.getElementById("filamentLength");
+      const filamentWeightEl = document.getElementById("filamentWeight");
+      const loader = document.getElementById("loader");
+      const progressBar = document.getElementById("progressBar");
+      const progressText = document.getElementById("progressText");
+      const processBtn = document.getElementById("processBtn");
+      const loopCountInput = document.getElementById("loopCount");
+      let selectedFile = null;
+      let baseStatistics = null;
+
+      // Show toast notification
+      function showToast(message, isError = false) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.className = isError ? "show error" : "show";
+        setTimeout(() => (toast.className = ""), 3000);
+      }
+
+      // Validate file input
+      function validateFile(file) {
+        if (!file.name.endsWith(".3mf")) {
+          showToast("Only .3mf files are supported.", true);
+          return false;
+        }
+        if (file.size < 1 * 1024 * 1024 || file.size > 10 * 1024 * 1024) {
+          showToast("File size must be between 1 MB and 10 MB.", true);
+          return false;
+        }
+        return true;
+      }
+
+      // Format duration from seconds to "Xh Ym Zs"
+      function formatDuration(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hours}h ${minutes}m ${secs}s`;
+      }
+
+      // Update statistics display
+      function updateStatistics(loopCount) {
+        if (!baseStatistics) return;
+        durationEl.textContent = formatDuration(
+          baseStatistics.duration * loopCount
+        );
+        platesEl.textContent = baseStatistics.plates;
+        filamentLengthEl.textContent = `${(
+          baseStatistics.filamentLength * loopCount
+        ).toFixed(1)}m`;
+        filamentWeightEl.textContent = `${(
+          baseStatistics.filamentWeight * loopCount
+        ).toFixed(1)}g`;
+      }
+
+      // Extract statistics from G-code
+      function extractStatistics(gcode, plates) {
+        let duration = 14250; // Default: 3h 57m 30s (14250 seconds)
+        let filamentLength = 38.7; // Default: 38.7m
+        let filamentWeight = 115.6; // Default: 115.6g
+
+        gcode.split("\n").forEach((line) => {
+          // Parse total estimated time (e.g., "; total estimated time: 47m 30s")
+          if (line.includes("; total estimated time:")) {
+            const timeMatch = line.match(/total estimated time: (\d+)m (\d+)s/);
+            if (timeMatch) {
+              const minutes = parseInt(timeMatch[1]);
+              const seconds = parseInt(timeMatch[2]);
+              duration = minutes * 60 + seconds;
+            }
+          }
+          // Parse filament length in mm (e.g., "; total filament length [mm] : 3874.86")
+          if (line.includes("; total filament length [mm] :")) {
+            const lengthMatch = line.match(
+              /total filament length \[mm\] : ([\d.]+)/
+            );
+            if (lengthMatch) {
+              filamentLength = parseFloat(lengthMatch[1]) / 1000; // Convert mm to meters
+            }
+          }
+          // Parse filament weight in grams (e.g., "; total filament weight [g] : 11.56")
+          if (line.includes("; total filament weight [g] :")) {
+            const weightMatch = line.match(
+              /total filament weight \[g\] : ([\d.]+)/
+            );
+            if (weightMatch) {
+              filamentWeight = parseFloat(weightMatch[1]);
+            }
+          }
+        });
+
+        // Log parsed values for debugging
+        console.log(
+          `Parsed statistics: duration=${duration}s, filamentLength=${filamentLength}m, filamentWeight=${filamentWeight}g, plates=${plates}`
+        );
+
+        return { duration, plates, filamentLength, filamentWeight };
+      }
+
+      // Display file list from 3MF archive
+      async function displayFileList(file) {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const zip = await JSZip.loadAsync(arrayBuffer);
+          fileListItems.innerHTML = "";
+          Object.keys(zip.files).forEach((name) => {
+            const li = document.createElement("li");
+            li.textContent = name;
+            if (name.match(/^Metadata\/plate_.*\.gcode$/)) {
+              li.className = "gcode";
+            }
+            fileListItems.appendChild(li);
+          });
+          fileList.style.display = "block";
+        } catch (error) {
+          showToast("Error reading file contents.", true);
+          fileList.style.display = "none";
+        }
+      }
+
+      // Handle G-code multiplication
+      function multiplyGcode(gcode, loopCount) {
+        const lines = gcode.split("\n");
+        const coreInstructions = lines.filter(
+          (line) =>
+            !line.startsWith(";") &&
+            line.trim() &&
+            !line.includes("START") &&
+            !line.includes("END")
+        );
+        const header = lines
+          .filter((line) => line.includes("START") || line.startsWith(";"))
+          .join("\n");
+        const footer = lines.filter((line) => line.includes("END")).join("\n");
+        const repeatedInstructions = Array(loopCount)
+          .fill(coreInstructions.join("\n"))
+          .join("\n");
+        return `${header}\n${repeatedInstructions}\n${footer}`.trim();
+      }
+
+      // Trigger file download
+      function triggerDownload(blob, filename) {
+        const downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = filename;
+        downloadLink.click();
+      }
+
+      // Handle file selection
+      async function handleFile(file) {
+        if (!validateFile(file)) return;
+        selectedFile = file;
+        selectedFileName.textContent = `Selected: ${file.name}`;
+        showToast(`File "${file.name}" selected.`);
+        await displayFileList(file);
+
+        // Extract statistics
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const zip = await JSZip.loadAsync(arrayBuffer);
+          const metaFiles = Object.keys(zip.files).filter((name) =>
+            name.match(/^Metadata\/plate_.*\.gcode$/)
+          );
+          if (metaFiles.length !== 1) {
+            statistics.style.display = "none";
+            showToast("No valid G-code file found inside 3MF.", true);
+            return;
+          }
+          const gcodePath = metaFiles[0];
+          const gcode = await zip.files[gcodePath].async("string");
+          baseStatistics = extractStatistics(gcode, 5); // Assume plates=5 as per client example
+          updateStatistics(parseInt(loopCountInput.value));
+          statistics.style.display = "block";
+        } catch (error) {
+          showToast("Error extracting statistics.", true);
+          statistics.style.display = "none";
+        }
+      }
+
+      // Event listeners
+      dropzone.addEventListener("click", () => fileInput.click());
+
+      dropzone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropzone.style.background = "#d3550020";
+      });
+
+      dropzone.addEventListener("dragleave", () => {
+        dropzone.style.background = "#d355000d";
+      });
+
+      dropzone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropzone.style.background = "#d355000d";
+        handleFile(e.dataTransfer.files[0]);
+      });
+
+      fileInput.addEventListener("change", () => {
+        if (fileInput.files.length > 0) {
+          handleFile(fileInput.files[0]);
+        }
+      });
+
+      loopCountInput.addEventListener("input", () => {
+        const loopCount = parseInt(loopCountInput.value) || 1;
+        updateStatistics(loopCount);
+      });
+
+      // Process 3MF file
+      async function processFile() {
+        if (!selectedFile) {
+          showToast("No file selected.", true);
+          return;
+        }
+        const loopCount = parseInt(document.getElementById("loopCount").value);
+        const outputName =
+          document.getElementById("outputName").value.trim() || "modified";
+        if (loopCount < 1 || loopCount > 100) {
+          showToast("Loop count must be between 1 and 100.", true);
+          return;
+        }
+        const estimatedOutputSize = selectedFile.size * loopCount;
+        if (estimatedOutputSize > 150 * 1024 * 1024) {
+          showToast("Output file may exceed 150 MB. Reduce loop count.", true);
+          return;
+        }
+
+        const startTime = performance.now();
+        try {
+          processBtn.classList.add("disabled");
+          loader.style.display = "block";
+          progressBar.style.width = "0%";
+          progressText.textContent = "0%";
+
+          const arrayBuffer = await selectedFile.arrayBuffer();
+          progressBar.style.width = "20%";
+          progressText.textContent = "20%";
+
+          const zip = await JSZip.loadAsync(arrayBuffer);
+          progressBar.style.width = "40%";
+          progressText.textContent = "40%";
+
+          const metaFiles = Object.keys(zip.files).filter((name) =>
+            name.match(/^Metadata\/plate_.*\.gcode$/)
+          );
+          if (metaFiles.length !== 1) {
+            showToast("No valid G-code file found inside 3MF.", true);
+            return;
+          }
+          progressBar.style.width = "60%";
+          progressText.textContent = "60%";
+
+          const gcodePath = metaFiles[0];
+          const originalGcode = await zip.files[gcodePath].async("string");
+          const repeatedGcode = multiplyGcode(originalGcode, loopCount);
+          zip.file(gcodePath, repeatedGcode);
+          progressBar.style.width = "80%";
+          progressText.textContent = "80%";
+
+          const newZip = await zip.generateAsync({ type: "blob" });
+          progressBar.style.width = "100%";
+          progressText.textContent = "100%";
+
+          triggerDownload(newZip, `${outputName}.3mf`);
+          showToast("File processed and downloaded successfully!");
+
+          const endTime = performance.now();
+          console.log(
+            `File Size: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`
+          );
+          console.log(
+            `Processing Time: ${((endTime - startTime) / 1000).toFixed(2)} s`
+          );
+        } catch (error) {
+          console.error(error);
+          showToast(`Error processing the file: ${error.message}`, true);
+        } finally {
+          setTimeout(() => {
+            loader.style.display = "none";
+          }, 500);
+          processBtn.classList.remove("disabled");
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,270 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+body {
+    font-family: "Inter", sans-serif;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+.site-header {
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.site-navigation ul,
+.site-navigation li {
+    margin: 0;
+    padding: 0;
+}
+
+.site-navigation li {
+    display: inline-block;
+    margin:0;
+}
+
+.btn {
+    background: #D35500;
+    padding: 10px;
+    color: #fff;
+    border-radius: 4px;
+    width: 114px;
+    display: flex;
+    justify-content: center;
+    height: 46px;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+}
+.card h3 {
+    font-size: 25px;
+    margin-top: 15px;
+}
+
+section.mn-bg {
+    background-image: url(./img/bg.png);
+    min-height: calc(100vh - 197px);
+    background-color: #D35500;
+    mix-blend-mode: hard-light;
+    background-size: 100% 100%;
+    padding: 30px 20px;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    max-width: 710px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 20px;
+    padding: 16px 30px 30px 30px;
+    box-sizing: border-box;
+}
+
+.flex.flex-column {
+    flex-direction: column;
+    align-items: center;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+}
+.file-upload-wrapper {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.file-upload-box {
+    position: relative;
+    padding: 30px;
+    text-align: center;
+    border: 2px dashed #D35500;
+    border-radius: 4px;
+    background-color: #d355000d;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+}
+
+.file-upload-box:hover {
+    background-color: #d3550000;
+    border-color: #D35500;
+}
+
+.file-upload-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.upload-content {
+    position: relative;
+    z-index: 0;
+}
+.upload-content a {
+    color: #D35500;
+}
+
+.upload-icon {
+    font-size: 2.5rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.file-list {
+    margin-top: 25px;
+    max-height: 115px;
+    overflow: auto;}
+    
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    margin-bottom: 0;
+    transition: all 0.2s ease;
+    border: 1px solid #dee2e6;
+    background: #E2E6EE;
+    border-radius: 4px;
+    height: 35px;
+}
+
+.file-item ~ .file-item {
+    margin-top: -5px;
+    border-top: 0;
+}
+.file-icon {
+    color: #6c757d;
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+}
+
+.file-name {
+    flex-grow: 1;
+    color: #495057;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 1rem;
+    font-size: 16px;
+}
+
+
+.remove-file {
+    color: #dc3545;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 1.25rem;
+    transition: color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-file:hover {
+    color: #c82333;
+}
+
+.drag-over {
+    background-color: #e9ecef;
+    border-color: #D35500;
+}
+
+@keyframes upload-progress {
+    0% { width: 0%; }
+    100% { width: 100%; }
+}
+
+.upload-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: #D35500;
+    animation: upload-progress 1s ease-in-out;
+}
+
+.form {
+    gap: 15px;
+    margin: 5px 0 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.form-group .cmn {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+    outline: none !important;
+    border: solid 1px #E2E6EE;
+    background: #E2E6EE;
+    padding-left: 15px;
+}
+
+.form label {
+    font-size: 14px;
+    color: #000;
+    font-weight: 500;
+}
+
+a.btn.join {
+    width: 100%;
+}
+p.copy {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+span.Selected {
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.upload-content h5 {
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+.file-item:last-of-type {
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width:767px) {
+
+    div.form{flex-direction: column;}
+    header.site-header {
+        padding: 0 15px;
+    }
+}
