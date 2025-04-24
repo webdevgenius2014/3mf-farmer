@@ -7,21 +7,32 @@
     <link rel="shortcut icon" href="images/favicon.webp" type="image/x-icon" />
     <style>
       @import url("lib/css/font.css");
-      
     </style>
-    <link rel="stylesheet" href="lib/css/style.css">
+    <link rel="stylesheet" href="lib/css/style.css" />
   </head>
   <body>
     <div class="container">
       <header class="site-header">
         <div class="site-identity">
-          <a href="javascript:void(0);">
-            <img src="images/logo.png" alt="3D Farmers Logo" width="158" height="78" />
+          <a href="javascript:void(0);" onclick="window.location.reload()">
+            <img
+              src="images/logo.png"
+              alt="3D Farmers Logo"
+              width="158"
+              height="78"
+            />
           </a>
         </div>
         <nav class="site-navigation">
           <ul class="nav">
-            <li><a href="javascript:void(0);" class="btn">Join us</a></li>
+            <li>
+              <a
+                target="_blank"
+                href="https://www.patreon.com/3DFarmers"
+                class="btn"
+                >Join us</a
+              >
+            </li>
           </ul>
         </nav>
       </header>
@@ -30,24 +41,45 @@
       <div class="container">
         <div class="card">
           <div class="flex flex-column">
-            <img src="images/happy-bunch-avtar.png" alt="Avatar" width="104" height="65" />
+            <img
+              src="images/happy-bunch-avtar.png"
+              alt="Avatar"
+              width="104"
+              height="65"
+            />
             <h3>3MF G-code Modifier</h3>
           </div>
           <div class="info-box">
             <ul>
-              <li>All processing happens locally in your browser – your data stays private, secure, and never leaves your device.</li>
+              <li>
+                All processing happens locally in your browser – your data stays
+                private, secure, and never leaves your device.
+              </li>
               <li>Note: Maximum file size for uploads is 15MB.</li>
             </ul>
           </div>
           <div class="file-upload-wrapper">
             <label class="file-upload-box mb-0" id="dropzone">
-              <input type="file" class="file-upload-input" id="fileInput" accept=".3mf" />
+              <input
+                type="file"
+                class="file-upload-input"
+                id="fileInput"
+                accept=".3mf"
+              />
               <div class="upload-content">
-                <img src="images/upload-icn.png" alt="Upload Icon" width="69" height="59" />
+                <img
+                  src="images/upload-icn.png"
+                  alt="Upload Icon"
+                  width="69"
+                  height="59"
+                />
                 <h5 class="mb-2">
-                  Drop your .3mf file here or <a href="javascript:void(0);">click to select</a>
+                  Drop your .3mf file here or
+                  <a href="javascript:void(0);">click to select</a>
                 </h5>
-                <span class="Selected" id="selectedFileName">No file selected</span>
+                <span class="Selected" id="selectedFileName"
+                  >No file selected</span
+                >
               </div>
             </label>
           </div>
@@ -59,15 +91,32 @@
           <div class="flex form off-white-text form">
             <div class="form-group">
               <label for="outputName">Custom Output Filename (.3mf):</label>
-              <input type="text" id="outputName" placeholder="e.g. modified-file" class="cmn" />
+              <input
+                type="text"
+                id="outputName"
+                placeholder="e.g. modified-file"
+                class="cmn"
+              />
             </div>
             <div class="form-group">
               <label for="loopCount">Loop Repeats (e.g. 5):</label>
-              <input type="number" id="loopCount" min="1" value="1" class="cmn" />
+              <input
+                type="number"
+                id="loopCount"
+                min="1"
+                value="1"
+                class="cmn"
+              />
             </div>
           </div>
           <div class="flex">
-            <a href="javascript:void(0);" class="btn join" id="processBtn" onclick="processFile()">Process & Download</a>
+            <a
+              href="javascript:void(0);"
+              class="btn join"
+              id="processBtn"
+              onclick="processFile()"
+              >Process & Download</a
+            >
           </div>
           <div id="loader">
             <div class="progress-container">
@@ -133,8 +182,12 @@
       // Update statistics display
       function updateStatistics(loopCount) {
         if (!baseStatistics) return;
-        durationEl.textContent = formatDuration(baseStatistics.duration * loopCount);
-        filamentWeightEl.textContent = `${(baseStatistics.filamentWeight * loopCount).toFixed(1)}g`;
+        durationEl.textContent = formatDuration(
+          baseStatistics.duration * loopCount
+        );
+        filamentWeightEl.textContent = `${(
+          baseStatistics.filamentWeight * loopCount
+        ).toFixed(1)}g`;
       }
 
       // Extract statistics from G-code
@@ -154,7 +207,9 @@
           }
           // Parse filament weight in grams (e.g., "; total filament weight [g] : 11.56")
           if (line.includes("; total filament weight [g] :")) {
-            const weightMatch = line.match(/total filament weight \[g\] : ([\d.]+)/);
+            const weightMatch = line.match(
+              /total filament weight \[g\] : ([\d.]+)/
+            );
             if (weightMatch) {
               filamentWeight = parseFloat(weightMatch[1]);
             }
@@ -162,7 +217,9 @@
         });
 
         // Log parsed values for debugging
-        console.log(`Parsed statistics: duration=${duration}s, filamentWeight=${filamentWeight}g`);
+        console.log(
+          `Parsed statistics: duration=${duration}s, filamentWeight=${filamentWeight}g`
+        );
 
         return { duration, filamentWeight };
       }
@@ -171,11 +228,19 @@
       function multiplyGcode(gcode, loopCount) {
         const lines = gcode.split("\n");
         const coreInstructions = lines.filter(
-          (line) => !line.startsWith(";") && line.trim() && !line.includes("START") && !line.includes("END")
+          (line) =>
+            !line.startsWith(";") &&
+            line.trim() &&
+            !line.includes("START") &&
+            !line.includes("END")
         );
-        const header = lines.filter((line) => line.includes("START") || line.startsWith(";")).join("\n");
+        const header = lines
+          .filter((line) => line.includes("START") || line.startsWith(";"))
+          .join("\n");
         const footer = lines.filter((line) => line.includes("END")).join("\n");
-        const repeatedInstructions = Array(loopCount).fill(coreInstructions.join("\n")).join("\n");
+        const repeatedInstructions = Array(loopCount)
+          .fill(coreInstructions.join("\n"))
+          .join("\n");
         return `${header}\n${repeatedInstructions}\n${footer}`.trim();
       }
 
@@ -198,7 +263,9 @@
         try {
           const arrayBuffer = await file.arrayBuffer();
           const zip = await JSZip.loadAsync(arrayBuffer);
-          const metaFiles = Object.keys(zip.files).filter((name) => name.match(/^Metadata\/plate_.*\.gcode$/));
+          const metaFiles = Object.keys(zip.files).filter((name) =>
+            name.match(/^Metadata\/plate_.*\.gcode$/)
+          );
           if (metaFiles.length !== 1) {
             statistics.style.display = "none";
             showToast("No valid G-code file found inside 3MF.", true);
@@ -253,7 +320,8 @@
         const loopCount = parseInt(document.getElementById("loopCount").value);
         let outputName = document.getElementById("outputName").value.trim();
         if (!outputName) {
-          outputName = selectedFile.name.replace(/\.3mf$/i, "") + `_loop_${loopCount}`;
+          outputName =
+            selectedFile.name.replace(/\.3mf$/i, "") + `_loop_${loopCount}`;
         }
         if (loopCount < 1 || loopCount > 100) {
           showToast("Loop count must be between 1 and 100.", true);
@@ -280,7 +348,9 @@
           progressBar.style.width = "40%";
           progressText.textContent = "40%";
 
-          const metaFiles = Object.keys(zip.files).filter((name) => name.match(/^Metadata\/plate_.*\.gcode$/));
+          const metaFiles = Object.keys(zip.files).filter((name) =>
+            name.match(/^Metadata\/plate_.*\.gcode$/)
+          );
           if (metaFiles.length !== 1) {
             showToast("No valid G-code file found inside 3MF.", true);
             return;
@@ -303,8 +373,22 @@
           showToast("File processed and downloaded successfully!");
 
           const endTime = performance.now();
-          console.log(`File Size: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`);
-          console.log(`Processing Time: ${((endTime - startTime) / 1000).toFixed(2)} s`);
+          console.log(
+            `File Size: ${(selectedFile.size / 1024 / 1024).toFixed(2)} MB`
+          );
+          console.log(
+            `Processing Time: ${((endTime - startTime) / 1000).toFixed(2)} s`
+          );
+
+          fileInput.value = "";
+          selectedFile = null;
+          baseStatistics = null;
+          selectedFileName.textContent = "";
+          loopCountInput.value = 1;
+          document.getElementById("outputName").value = "";
+          statistics.style.display = "none";
+          progressBar.style.width = "0%";
+          progressText.textContent = "0%";
         } catch (error) {
           console.error(error);
           showToast(`Error processing the file: ${error.message}`, true);
