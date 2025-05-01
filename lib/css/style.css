@@ -52,7 +52,9 @@ a {
 .container {
     max-width: 1280px;
     margin: 0 auto;
-    width: 100%
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
 .card h3 {
@@ -155,7 +157,7 @@ span.Selected {
 
 .form {
     gap: 15px;
-    margin: 15px 0 15px;
+    margin: 18px 0 15px;
 }
 
 .form-group {
@@ -321,7 +323,13 @@ p.copy {
 
 @media screen and (max-width:767px) {
     div.form {
-        flex-direction: column
+        flex-direction: column;    
+        gap:0;
+    }
+    div.container{padding: 0;}
+    img[alt="Avatar"] {
+        max-width: 250px;
+        width: 100%;
     }
 
     header.site-header {
