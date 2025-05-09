@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3MF G-code Modifier</title>
+    <link rel="shortcut icon" href="images/favicon.webp" type="image/x-icon" />
+    <link rel="import" href="lib/css/font.css" />
+    <link rel="stylesheet" href="lib/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="site-header">
+        <div class="site-identity">
+          <a href="javascript:void(0);" onclick="window.location.reload()">
+            <img
+              src="images/logo.png"
+              alt="3D Farmers Logo"
+              width="158"
+              height="78"
+            />
+          </a>
+        </div>
+        <nav class="site-navigation">
+          <ul class="nav">
+            <li>
+              <a
+                target="_blank"
+                href="https://www.patreon.com/3DFarmers"
+                class="btn"
+                >Join us</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </header>
+    </div>
+    <section class="mn-bg">
+      <div class="container">
+        <div class="card">
+          <div class="flex flex-column">
+            <!-- <img
+              src="images/happy-bunch-avtar.png"
+              alt="Avatar"
+              width="104"
+              height="65"
+            /> -->
+            <img
+              src="images/FarmLoop_Logo.png"
+              alt="Avatar"
+              width="290"
+              height="45"
+              style="object-fit: contain"
+            />
+            <h3>Loop Modifier Lite</h3>
+            <!-- <h3>3MF G-code Modifier</h3> -->
+          </div>
+          <div class="info-box">
+            <ul>
+              <li>
+                All processing happens locally in your browser – your data stays
+                private, secure, and never leaves your device.
+              </li>
+              <li>Note: Maximum file size for uploads is 15MB.</li>
+              <li>
+                The Lite version lets you loop up to 3 times. Join our Skool
+                community to support us and unlock unlimited loops.
+              </li>
+            </ul>
+          </div>
+          <div class="file-upload-wrapper">
+            <label class="file-upload-box mb-0" id="dropzone">
+              <input
+                type="file"
+                class="file-upload-input"
+                id="fileInput"
+                accept=".3mf"
+              />
+              <div class="upload-content">
+                <img
+                  src="images/upload-icn.png"
+                  alt="Upload Icon"
+                  width="69"
+                  height="59"
+                />
+                <h5 class="mb-2">
+                  Drop your .3mf file here or
+                  <a href="javascript:void(0);">click to select</a>
+                </h5>
+                <span class="Selected" id="selectedFileName"
+                  >No file selected</span
+                >
+              </div>
+            </label>
+          </div>
+          <div id="statistics" style="display: none">
+            <h4>Queue Statistics:</h4>
+            <p>Duration: <span id="duration"></span></p>
+            <p>Filament Usage: <span id="filamentWeight"></span></p>
+          </div>
+          <div class="flex form off-white-text form">
+            <div class="form-group">
+              <label for="outputName">Custom Output Filename (.3mf):</label>
+              <input
+                type="text"
+                id="outputName"
+                placeholder="e.g. modified-file"
+                class="cmn"
+              />
+            </div>
+            <div class="form-group">
+              <label for="loopCount">Loop Repeats (Max 3):</label>
+              <input
+                type="number"
+                id="loopCount"
+                min="1"
+                value="1"
+                class="cmn"
+              />
+            </div>
+          </div>
+          <div class="">
+            <a
+              href="javascript:void(0);"
+              class="btn join"
+              id="processBtn"
+              onclick="processFile()"
+              ><b>Process & Download</b></a
+            >
+            <a
+              href="https://www.skool.com/3dfarmers"
+              class="btn join"
+              id="upgradeBtn"
+              style="margin-top: 10px"
+            >
+              <b>Get the Full Version</b>
+            </a>
+          </div>
+          <div id="loader">
+            <div class="progress-container">
+              <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+            <div id="progressText">0%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="container">
+        <p class="copy">
+          Copyright ©
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          3D Farmers, All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <div id="toast"></div>
+    <script src="lib/js/jszip.min.js"></script>
+    <script src="lib/js/process.js"></script>
+    <script>
+      const isLite = document.querySelector("h3")?.textContent.includes("Lite");
+      const upgradeBtn = document.getElementById("upgradeBtn");
+
+      if (isLite) {
+        loopCountInput.setAttribute("max", "3");
+
+        loopCountInput.addEventListener("input", () => {
+          if (parseInt(loopCountInput.value) > 3) {
+            loopCountInput.value = 3;
+            if (upgradeBtn) {
+              upgradeBtn.classList.add("glow");
+              setTimeout(() => upgradeBtn.classList.remove("glow"), 1500);
+            }
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

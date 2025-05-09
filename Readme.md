@@ -1,21 +1,96 @@
-# 3MF G-code Modifier
+### ✅ Updated `Readme.md` (with token system)
 
-## Overview
-A single-page, client-side web application to process 3MF files locally, multiply G-code instructions, and download the modified file.
+```md
+# Loop Modifier – Token-Based G-code Looping Tool
 
-## Deployment
-1. Place `index.html` in a web server directory or open directly in a browser.
-2. For local testing, run `python -m http.server` and access `http://localhost:8000`.
+## 🔍 Overview
 
-## Testing
-1. Use a sample 3MF file (1–15 MB) containing a `Metadata/plate_*.gcode` file.
-2. Drag-and-drop or select the file, set loop repeats (e.g., 5), and specify an output filename.
-3. Click "Process & Download" to generate the modified 3MF.
-4. Test on Chrome, Firefox, and Edge.
-5. Verify output file size (up to 150 MB) and G-code multiplication.
+Loop Modifier is a web-based tool that lets users upload `.3mf` files and repeat their G-code instructions. It supports a **token-based access system**:
 
-## Dependencies
-- JSZip
+- 🔓 Full Version: Unlimited loops via `?token=VALID_TOKEN`
+- 🔒 Lite Version: Max 3 loops with upgrade link
 
-## Browser Support
-- Chrome, Firefox, Edge (latest versions).
+---
+
+## 🚀 Deployment Instructions
+
+### 1. File Structure
+```
+
+/home/YOUR_USERNAME/
+├── token.txt # Contains the current valid token
+├── public_html/
+│ ├── index.php # Entry point – checks token
+│ ├── full.html # Full version of the tool
+│ ├── lite.html # Lite version of the tool
+│ ├── gen_token.php # Script to regenerate token monthly
+│ ├── lib/
+│ │ ├── js/process.js
+│ │ └── css/style.css
+│ └── assets/
+
+```
+
+---
+
+### 2. Setting Up Token Authentication
+
+- `index.php` will read the token from `../token.txt`.
+- If the URL contains `?token=VALID_TOKEN`, it loads `full.html`.
+- Otherwise, it loads `lite.html`.
+
+Example:
+```
+
+https://yourdomain.com?token=abc123 → Full version
+https://yourdomain.com → Lite version
+
+```
+
+---
+
+## 🔁 Monthly Token Auto-Rotation (Cron)
+
+Use the included `gen_token.php` to:
+
+- Generate a new token
+- Save it in `../token.txt`
+
+Example cron job (run on the 1st of each month at midnight):
+
+```
+
+0 0 1 \* \* php /home/YOUR_USERNAME/public_html/gen_token.php
+
+```
+
+---
+
+## 🧪 Testing
+
+### Full Version:
+- Visit with correct token in URL
+- Upload a valid `.3mf` file
+- Set any loop count (e.g. 20)
+- Click “Process & Download”
+
+### Lite Version:
+- Visit without token
+- Max loop allowed = 3
+- Extra text and "Get Full Version" button will appear
+- UI restricts loop > 3 and glows upgrade button
+
+---
+
+## 🛠 Dependencies
+
+- [JSZip](https://stuk.github.io/jszip/) – used for `.3mf` archive manipulation
+
+---
+
+## ✅ Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Edge (latest)
+```
